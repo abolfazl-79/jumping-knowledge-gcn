@@ -66,7 +66,7 @@ def plot_node_degree_distribution(Gnx: nx.Graph, save_path: str = None, log_scal
 
 def visualize_degree_centrality(Gnx: nx.Graph, save_path: Optional[str] = None, 
                                 threshold_rank: int = 10, node_size_scale: float = 1000,
-                                figsize: Tuple[int, int] = (12, 12),
+                                figsize: tuple = (12, 12),
                                 seed: int = 42) -> dict:
     """
     Visualize a graph with nodes sized and colored by degree centrality, highlighting top central nodes.
@@ -108,7 +108,7 @@ def visualize_degree_centrality(Gnx: nx.Graph, save_path: Optional[str] = None,
     pos = nx.spring_layout(Gnx, seed=seed)
     
     # Plot
-    plt.figure(figsize=figsize)
+    plt.figure(figsize=(12, 12))
     nx.draw_networkx_nodes(
         Gnx, pos, node_size=node_size, cmap=plt.cm.plasma, 
         node_color=cent_bin, nodelist=list(centrality.keys()), alpha=cent_bin
@@ -131,7 +131,7 @@ def visualize_degree_centrality(Gnx: nx.Graph, save_path: Optional[str] = None,
 def visualize_graph_by_labels(graph: nx.Graph, labels: Union[pd.Series, np.ndarray, list], 
                              label_dict: Dict[int, str], save_path: Optional[str] = None, 
                              node_size: int = 50, edge_width: float = 0.25, 
-                             figsize: Tuple[int, int] = (20, 15), seed: int = 42) -> None:
+                             figsize: tuple = (20, 15), seed: int = 42) -> None:
     
     """
     Visualize a graph with nodes colored by their labels.
@@ -181,7 +181,7 @@ def visualize_graph_by_labels(graph: nx.Graph, labels: Union[pd.Series, np.ndarr
         nodelist[c].append(i)
     # Compute node positions using spring layout with a fixed seed for reproducibility
     pos = nx.spring_layout(Gnx, seed=42)
-    plt.figure(figsize)
+    plt.figure(figsize= (20, 15))
     label_list = list(label_dict.keys())
     # Iterate over node groups and their corresponding label indices
     for i, group in enumerate(zip(nodelist, label_list)):
@@ -189,6 +189,7 @@ def visualize_graph_by_labels(graph: nx.Graph, labels: Union[pd.Series, np.ndarr
         nodes, label = group[0], group[1]
         # Draw nodes for this label with specified color, size, and legend label
         nx.draw_networkx_nodes(Gnx, pos, nodelist=nodes, node_size=5, node_color=colorlist[i], label=label)
+    plt.title("Visualize Graph By Labels")
     nx.draw_networkx_edges(Gnx, pos, width=0.25)
     plt.show()
     
@@ -220,6 +221,7 @@ def class_distribution(labels: pd.DataFrame, save_path: Optional[str] = None) ->
         raise ValueError(f"Expected 7 classes, found {len(count)}")
 
     plt.figure(figsize=(10, 6))
+    plt.title("Class Distribution")
     plt.bar(range(7), count)
     plt.xlabel("class", size=20)
     plt.show()
@@ -272,6 +274,8 @@ def class_connection_matrix(Gnx: nx.Graph, node_data: pd.DataFrame, label_dict: 
 
     # Plot heatmap
     plt.figure(figsize=(9, 7))
+    plt.title("Class Connection Matrix")
+    class_connection_matrix
     with plt.rc_context({"font.size": 13}):  # Localize font size change
         hm = sns.heatmap(scaled_matrix, annot=True, cmap='hot_r', cbar=True, square=True)
         plt.xlabel("Class", size=20)
@@ -332,6 +336,7 @@ def splitted_classes_distribution(data: pd.DataFrame, label_dict: Dict[str, int]
     test_label_counter = dict(collections.Counter(test_labels)).items()
     test_label_count = [x[1] for x in sorted(test_label_counter)]
 
+    plt.title("splitted_classes_distribution")
 
     # Plot train distribution
     axes[0].bar(range(7), train_label_count)
@@ -348,6 +353,8 @@ def splitted_classes_distribution(data: pd.DataFrame, label_dict: Dict[str, int]
     axes[2].set_xlabel("class", size=20)
     axes[2].set_title("Test")
 
+    
+
     if save_path:
         os.makedirs(os.path.dirname(save_path) or ".", exist_ok=True)
         plt.savefig(save_path)
@@ -363,6 +370,7 @@ if __name__ == "__main__":
     splitted_nodes = split_nodes(node_data)
     Gnx = create_graph(edgelist)
     plot_node_degree_distribution(Gnx)
+
     visualize_degree_centrality(Gnx)
     visualize_graph_by_labels(Gnx, labels, label_dict)
     class_distribution(labels)
